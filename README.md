@@ -1,4 +1,4 @@
-# Running `optimization_final_4.py`
+# Running `optimization_final.py`
 
 ### Setup
 
