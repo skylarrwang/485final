@@ -12,7 +12,7 @@ python -m pip install -r requirements.txt
 ### Run
 
 ```bash
-python optimization_final_4.py --save-metrics-prefix bench/run1
+python optimization_final.py --save-metrics-prefix bench/run1
 ```
 
 ### Outputs (for prefix `bench/run1`)
@@ -37,13 +37,13 @@ python optimization_final_4.py --save-metrics-prefix bench/run1
 Test to make sure everything's working:
 
 ```bash
-python optimization_final_4.py --num-pairs 200 --optimizer-steps 20 --save-metrics-prefix bench/lightweight-test
+python optimization_final.py --num-pairs 200 --optimizer-steps 20 --save-metrics-prefix bench/lightweight-test
 ```
 
 Bigger run:
 
 ```bash
-python optimization_final_4.py --num-pairs 1000 --optimizer-steps 50 --save-metrics-prefix bench/run2
+python optimization_final.py --num-pairs 1000 --optimizer-steps 50 --save-metrics-prefix bench/run2
 ```
 
 ### Notes
