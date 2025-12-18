@@ -12,8 +12,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import sys
-import textwrap
 import time
 from dataclasses import dataclass
 from typing import Dict, Optional, Tuple
@@ -22,6 +20,19 @@ try:
     import numpy as np
 except Exception:  # pragma: no cover
     np = None  # type: ignore[assignment]
+
+try:
+    from datasets import load_dataset  # type: ignore
+    from sentence_transformers import SentenceTransformer  # type: ignore
+except Exception as e:  # pragma: no cover
+    raise SystemExit(
+        "Missing dependencies. Create a venv and install requirements, then try again:\n"
+        "  python3 -m venv .venv\n"
+        "  source .venv/bin/activate\n"
+        "  python -m pip install -U pip\n"
+        "  python -m pip install -r requirements.txt\n\n"
+        f"Import error: {e}"
+    )
 
 # %% [cell 4] (markdown)
 """
@@ -823,79 +834,10 @@ def _parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-def _die(msg: str, exit_code: int = 2) -> "None":
-    print(msg, file=sys.stderr)
-    raise SystemExit(exit_code)
-
-
-def _runtime_imports():
-    """
-    Do heavyweight/optional imports here so `--help` works without dependencies installed.
-    Returns (load_dataset, SentenceTransformer).
-    """
-    if sys.version_info >= (3, 14):
-        print(
-            "Warning: You are using Python "
-            f"{sys.version_info.major}.{sys.version_info.minor}. "
-            "If dependency installation fails (especially torch), use Python 3.12 or 3.13.\n",
-            file=sys.stderr,
-        )
-
-    if np is None:
-        _die(
-            textwrap.dedent(
-                f"""\
-                Missing dependency: numpy
-
-                Fix:
-                  python -m pip install -r requirements.txt
-
-                Python: {sys.version.split()[0]}
-                """
-            ).rstrip()
-        )
-
-    try:
-        from datasets import load_dataset  # type: ignore
-    except Exception as e:
-        _die(
-            textwrap.dedent(
-                f"""\
-                Missing dependency: datasets
-
-                Fix:
-                  python -m pip install -r requirements.txt
-
-                Details: {e}
-                """
-            ).rstrip()
-        )
-
-    try:
-        from sentence_transformers import SentenceTransformer  # type: ignore
-    except Exception as e:
-        _die(
-            textwrap.dedent(
-                f"""\
-                Missing dependency: sentence-transformers (and its backend, typically torch)
-
-                Fix:
-                  python -m pip install -r requirements.txt
-
-                If this fails on your Python version, try Python 3.12 or 3.13.
-                Details: {e}
-                """
-            ).rstrip()
-        )
-
-    # Let users override cache; default to project-local cache for reproducibility.
-    os.environ.setdefault("HF_HOME", os.path.join(os.getcwd(), ".hf_cache"))
-    return load_dataset, SentenceTransformer
-
-
 def main() -> None:
     args = _parse_args()
-    load_dataset, SentenceTransformer = _runtime_imports()
+    # Let users override cache; default to project-local cache for reproducibility.
+    os.environ.setdefault("HF_HOME", os.path.join(os.getcwd(), ".hf_cache"))
     cfg = Config(
         num_pairs=args.num_pairs,
         optimizer_steps=args.optimizer_steps,
