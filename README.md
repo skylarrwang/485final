@@ -3,7 +3,6 @@
 ### Setup
 
 ```bash
-cd /Users/skylar/Documents/CPSC485/final_project
 python3.13 -m venv .venv || python3.12 -m venv .venv || python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
